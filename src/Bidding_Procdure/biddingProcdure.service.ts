@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { faker } from '@faker-js/faker';
+import { FakeService } from 'src/PrPreparation/pidentification/fake.service';
 @Injectable()
 export class BiddingService {
 private readonly apiurlPreparations="https://dev-bo.megp.peragosystems.com/tendering/api/bds-preparations"
@@ -8,17 +9,20 @@ private readonly apiurlGeneral="https://dev-bo.megp.peragosystems.com/tendering/
 private readonly apiurlSubmission="https://dev-bo.megp.peragosystems.com/tendering/api/bds-submissions"
 private readonly apiurlEvaluation="https://dev-bo.megp.peragosystems.com/tendering/api/bds-evaluations"
 private readonly apiurlAward="https://dev-bo.megp.peragosystems.com/tendering/api/bds-awards"
+constructor(
+  private readonly identifactionservice:FakeService
+  
+){}
+
   async biddingProcdure(authHeader: string) {
   
     const webToken = process.env.WEB_TOKEN;
 
-    
     if (!webToken) {
       throw new Error('WEB_TOKEN is not defined');
     }
 //
-
-
+const {id:procurementRequisitionId} = await this.identifactionservice.getFakesData();
 const bds_generals = {
     clarificationDeadline: "2024-08-14T21:00:00.000Z",
     jointVentureAllowed: false,
@@ -28,7 +32,8 @@ const bds_generals = {
     preBidConferenceRequired: false,
     siteVisitAllowed: false,
     subContractAllowed: false,
-    tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+    // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+    tenderId:procurementRequisitionId
 }
 // these bds preparation 
 const bds_Preparation={

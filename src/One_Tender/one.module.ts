@@ -5,12 +5,15 @@ import { BiddingModule } from 'src/Bidding_Procdure/biddingProcdure.module';
 import { ContractModule } from 'src/ContractConditions/contact.module';
 import { ScheduleModule } from 'src/Schedule_of_requirement/Schedule.module';
 import { ConfigarationModule } from 'src/configaration/configaration.module';
+import { allprModule } from 'src/PrPreparation/allpr/allpr.module';
 
 @Module({
     imports:[
+        allprModule,
 ConfigarationModule,
 BiddingModule,
 ContractModule,
+ScheduleModule
     ],
     controllers :[OneController],
     providers :[OneServices],

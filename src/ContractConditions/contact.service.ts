@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { faker } from '@faker-js/faker';
+import { FakeService } from 'src/PrPreparation/pidentification/fake.service';
 @Injectable()
 export class ContractService {
 private readonly apiurlGeneralProvision="https://dev-bo.megp.peragosystems.com/tendering/api/scc-general-provisions"
@@ -11,6 +12,7 @@ private readonly apiurlGuarantees="https://dev-bo.megp.peragosystems.com/tenderi
 private readonly apiurlLiabilities="https://dev-bo.megp.peragosystems.com/tendering/api/scc-liabilities"
 //i include the invitation
 private readonly apiurlInvitation_P_fee="https://dev-bo.megp.peragosystems.com/tendering/api/tender-participation-fees"
+constructor(private readonly identifactionservice:FakeService){}
   async ContractCondition(authHeader: string) {
 
     const webToken = process.env.WEB_TOKEN; 
@@ -19,18 +21,21 @@ private readonly apiurlInvitation_P_fee="https://dev-bo.megp.peragosystems.com/t
   
   }
   //scc_general_provision 
+  const {id:procurementRequisitionId} = await this.identifactionservice.getFakesData();
   const scc_general_provision={
     commencementDay: 1,
     contractDuration: 2,
     contractType: "turn key",
     deliverySite: "11 ",
-    tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+    // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060" 
+    tenderId: procurementRequisitionId
   }
 
 const scc_contract_deliverables ={
     deliverable:["11c"], 
     deliverySchedule: 2,
-    tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+    // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+    tenderId: procurementRequisitionId
 }
 const PayemtTerms={
 advancePaymentAllowed: faker.datatype.boolean(),
@@ -39,21 +44,25 @@ contractCurrency: ["MWK"],
 latePaymentPenalty: 4,
 paymentMode:["paymentMethodOne"],
 paymentReleasePeriod: 15,
-tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+// tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+tenderId: procurementRequisitionId
+
 }
 const PayemntSchedule={
     order: 3,
     paymentPercentage:  5,
     paymentSchedule: "55",
     requiredDocuments:  ["dd"],
-    tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060" 
+    // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060" 
+    tenderId: procurementRequisitionId
 }
 
 const liabilities={
 liquidityDamage: 2,
 liquidityDamageLimit: 2,
 postWarrantyServicePeriod: 2,
-tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060",
+// tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060",
+tenderId: procurementRequisitionId,
 warrantyPeriod: 2
 }
 const Guarantees={
@@ -62,7 +71,8 @@ guaranteeForm: ["Bank Guarantee"],
 guaranteePercentage: 42,
 guaranteeRequired: faker.datatype.boolean(),
 guaranteeType: "Advance Payment Guarantee",
-tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060",
+// tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060",
+tenderId: procurementRequisitionId,
 validityPeriod: 45
 }
 //threse is invitation part 
@@ -70,7 +80,8 @@ const ParticipationFee={
   amount: faker.number.int({min:50000}),
   currency: "MWK",
   method: "Bank",
-  tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+  // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+  tenderId: procurementRequisitionId
 }
 
   try{

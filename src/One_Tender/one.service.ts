@@ -2,12 +2,14 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { BiddingService } from 'src/Bidding_Procdure/biddingProcdure.Service';
 import { ConfigurationService } from 'src/configaration/configaration.service';
 import { ContractService } from 'src/ContractConditions/contact.service';
+import { allprService } from 'src/PrPreparation/allpr/allpr.service';
 import { ScheduleService } from 'src/Schedule_of_requirement/Schedule.service';
 // https://dev-bo.megp.peragosystems.com/tendering/api/tenders/change-status
 
 @Injectable()
 export class OneServices {
   constructor(
+    private readonly  AllPrService:allprService,
     private readonly contractService: ContractService,
     private readonly configurationService: ConfigurationService,
     private readonly biddingService: BiddingService,
@@ -22,6 +24,7 @@ export class OneServices {
     }
 
     try {
+      await this.AllPrService.createAllPR(authHeader);
       await this.biddingService.biddingProcdure(authHeader);  // Ensure method names are correct
       await this.configurationService.registerProcurementDetails(authHeader);
       await this.contractService.ContractCondition(authHeader);

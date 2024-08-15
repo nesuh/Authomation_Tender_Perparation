@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { faker } from '@faker-js/faker';
+import { FakeService } from 'src/PrPreparation/pidentification/fake.service';
 @Injectable()
 export class ConfigurationService {
+  constructor(private readonly identifactionservice:FakeService){}
   async registerProcurementDetails(authHeader: string) {
-    const tenderId = 'f516026b-6100-45aa-8df9-f8092c41fb80';
+    // const tenderId = 'f516026b-6100-45aa-8df9-f8092c41fb80';
     const webToken = process.env.WEB_TOKEN;
 
-    
+   
+    const {id:procurementRequisitionId} = await this.identifactionservice.getFakesData();
+   
     if (!webToken) {
       throw new Error('WEB_TOKEN is not defined');
     }
@@ -18,13 +22,13 @@ export class ConfigurationService {
       order: 20,
       position: 'my-position_test',
       // tenderId:faker.string.uuid(),
-      tenderId:tenderId
+      tenderId: procurementRequisitionId,
     };
 
    
     const personnelList = {
       spdId: '831622bc-af08-48c8-a297-b102f5ec45f0',
-      tenderId: tenderId
+      tenderId: procurementRequisitionId,
     };
 
    
@@ -33,7 +37,7 @@ export class ConfigurationService {
       marketApproach: 'national',
       stage: 1,
       stageType: 'single',
-      tenderId: tenderId,
+      tenderId: procurementRequisitionId,
       PRProcurementMechanisms:{}
      
     };

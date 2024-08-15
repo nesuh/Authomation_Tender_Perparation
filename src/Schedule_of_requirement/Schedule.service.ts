@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { Requirement } from './requirement.model';
+import { FakeService } from 'src/PrPreparation/pidentification/fake.service';
 
 @Injectable()
 export class ScheduleService {
   private readonly apiUrl = 'https://dev-bo.megp.peragosystems.com/tendering/api/sor-technical-requirements';
+ constructor( private readonly identifactionservice:FakeService){}
 
 
   private async sendTechnicalRequirement(data: Requirement) {
@@ -13,6 +15,8 @@ export class ScheduleService {
     if (!webToken) {
       throw new Error('WEB_TOKEN is not defined');
     }
+    const {id:procurementRequisitionId} = await this.identifactionservice.getFakesData();
+
     try {
       const response = await axios.post(this.apiUrl, data, {
         headers: {
