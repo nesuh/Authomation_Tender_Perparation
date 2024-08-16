@@ -26,19 +26,60 @@ export class ItemService {
         const calculatedAmount = quantity * unitPrice;
         const totalEstimatedAmount = calculatedAmount + 5; // Ensure this is greater than calculatedAmount
 
+const descriptions = ['Laptop', 'Jeans', 'Smartphone'];
+
+// Select a description randomly
+const description = faker.helpers.arrayElement(descriptions);
+
+    const getItemDetails = (items:string)=>{
+        switch(items){
+            case 'Labtop':
+            return{
+    commodityCode:'85673351',
+    itemCode:'85673351-00212',
+    classification:'85673351',
+    uOMName: "piece"
+    }
+        case 'Jeans':
+    return{
+    commodityCode:'85673353',
+    itemCode:'85673353-00211',
+    classification:'85673353',
+    uOMName: "centi gram"
+    }
+        case 'Smartphone':
+    return{
+    commodityCode:'85673352',
+    itemCode:'85673352-00213',
+    classification:'85673352',
+    uOMName: "piece"
+    }
+        default :
+    return{
+    commodityCode: '00000000',
+    itemCode: '00000000-00000',
+    classification: '00000000',
+    uOMName: 'unit',
+    }
+    }
+
+}
+const itemDetails = getItemDetails(description);
+
+
         const insertItemData = {
-            classification: "85673351",
+            classification:itemDetails.classification,
             currency: 'MKW',
-            description: "Laptop",
+            description,
             id: faker.string.uuid(), // Ensure UUID is valid or use a placeholder if applicable
-            itemCode: "85673351-00212",
+            itemCode:itemDetails.itemCode,
             measurement: faker.string.uuid(), // Use a valid UUID or a placeholder if applicable
             procurementRequisitionId,
             quantity: quantity,
             unitPrice: unitPrice,
             calculatedAmount: calculatedAmount.toFixed(2),
             totalEstimatedAmount: totalEstimatedAmount.toFixed(2), // Ensure this value is valid
-            uom: "piece", // Ensure UUID if expected, otherwise correct value
+            uom:itemDetails.uOMName, // Ensure UUID if expected, otherwise correct value
         };
 
        

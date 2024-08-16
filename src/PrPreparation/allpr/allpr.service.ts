@@ -10,6 +10,7 @@ import { TimeLineService } from "../ptimeline/timeline.service";
 @Injectable()
 export class allprService{
     private readonly   urlapi = 'https://dev-bo.megp.peragosystems.com/planning/api/procurement-requisitions';
+    private readonly submiturlapi='https://dev-bo.megp.peragosystems.com/planning/api/procurement-requisitions/initiate-workflow'
     constructor(
         // private readonly IdentifcationService:FakeService,
         // private readonly MethodService:MethodService,
@@ -45,7 +46,9 @@ export class allprService{
             // await this.itemservice.createItemData()
             await this.timelineservice.createTimeLine()
 
-            console.log("all procuremnt data are register successfully!");
+            
+            console.log("Planning is  are registered successfully!");
+            
           
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
