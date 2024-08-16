@@ -20,7 +20,7 @@ export class AppService {
       throw new InternalServerErrorException('WEB_TOKEN is not defined');
     }
     try{
-        await this.allservice.createAllPR(authHeader)
+        await this.allservice.initiateWorkflow(authHeader)
         await this.oneservice.oneTender(authHeader)
     }catch (error) {
       console.error('Error executing One Tender:', error);
