@@ -3,7 +3,7 @@ import { allprService } from "./allpr.service";
 
 
 @Controller('allpr')
-export class allprControllor{
+export class allprControllor{qs
     constructor(
         private readonly allprservice:allprService
     ){}

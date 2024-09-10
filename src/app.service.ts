@@ -8,12 +8,12 @@ import { OneServices } from './One_Tender/one.service';
 @Injectable()
 export class AppService {
     constructor(
-     
+
         private readonly allservice:allprService,
         private readonly oneservice:OneServices
        ) {}
 
-       async appAll( authHeader:string){
+    async appAll( authHeader:string){
     const webToken = process.env.WEB_TOKEN;
 
     if (!webToken) {
