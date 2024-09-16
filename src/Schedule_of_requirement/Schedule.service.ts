@@ -1,22 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { Requirement } from './requirement.model';
-import { FakeService } from 'src/PrPreparation/pidentification/fake.service';
+// import { allprService } from 'src/PrPreparation/allpr/allpr.service';
+
 
 @Injectable()
 export class ScheduleService {
   private readonly apiUrl = 'https://dev-bo.megp.peragosystems.com/tendering/api/sor-technical-requirements';
- constructor( private readonly identifactionservice:FakeService){}
+ constructor(
+  // private readonly allprservice:allprService
+ ){}
 
 
-  private async sendTechnicalRequirement(data: Requirement) {
+  private async sendTechnicalRequirement(authHeader,data: Requirement,prId) {
     const  webToken = process.env.WEB_TOKEN;
 
     if (!webToken) {
       throw new Error('WEB_TOKEN is not defined');
     }
-    const {id:procurementRequisitionId} = await this.identifactionservice.getFakesData();
-
+ 
+    const procurementRequisitionId=prId;
+      console.log(procurementRequisitionId)
+      
     try {
       const response = await axios.post(this.apiUrl, data, {
         headers: {
@@ -39,7 +44,7 @@ export class ScheduleService {
     }
   }
 
-  async sendAllRequirements(authHeader: string) {
+  async sendAllRequirements(authHeader: string,prId:string) {
     const requirements: Requirement[] = [
       {
         bidFormId: 'cc707afb-c76a-4a66-b807-8bcb1089132c',
@@ -89,7 +94,7 @@ export class ScheduleService {
     ];
 
     for (const requirement of requirements) {
-      await this.sendTechnicalRequirement(requirement);
+      await this.sendTechnicalRequirement(authHeader,requirement,prId);
     }
   }
 }

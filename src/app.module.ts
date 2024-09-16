@@ -1,18 +1,16 @@
 import { Module } from '@nestjs/common';
-// import { OneModule } from './One_Tender/one.module';
-
 import { allprModule } from './PrPreparation/allpr/allpr.module';
 
-// import { AppController } from './app.controller';
-// import { AppService } from './app.service';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+// import { FakeModule } from './PrPreparation/pidentification/fake.module';
 
 
 @Module({
   imports: [
   allprModule,
-  // OneModule,
     ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

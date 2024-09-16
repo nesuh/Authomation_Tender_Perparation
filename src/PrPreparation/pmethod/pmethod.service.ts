@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { FakeService } from '../pidentification/fake.service';
+import { IdentificationService } from '../pidentification/Identification.service';
 
 @Injectable()
 export class MethodService {
   private readonly urlapi = 'https://dev-bo.megp.peragosystems.com/planning/api/procurement-mechanisms';
 
-  constructor(private readonly fakeService: FakeService) {}
+  constructor(private readonly IdentificationService: IdentificationService) {}
 
   async createProcurementMethod() {
     const webToken = process.env.WEB_TOKEN;
-    const {id:procurementRequisitionId} = await this.fakeService.getFakesData();
+    const {id:procurementRequisitionId} = await this.IdentificationService.getIdentificationsData();
     // const procId = store.id;
 
     if (!procurementRequisitionId) {

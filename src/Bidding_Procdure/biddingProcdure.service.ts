@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { faker } from '@faker-js/faker';
-import { FakeService } from 'src/PrPreparation/pidentification/fake.service';
+// import { allprService } from 'src/PrPreparation/allpr/allpr.service';
+
 @Injectable()
 export class BiddingService {
 private readonly apiurlPreparations="https://dev-bo.megp.peragosystems.com/tendering/api/bds-preparations"
@@ -10,19 +11,22 @@ private readonly apiurlSubmission="https://dev-bo.megp.peragosystems.com/tenderi
 private readonly apiurlEvaluation="https://dev-bo.megp.peragosystems.com/tendering/api/bds-evaluations"
 private readonly apiurlAward="https://dev-bo.megp.peragosystems.com/tendering/api/bds-awards"
 constructor(
-  private readonly identifactionservice:FakeService
-  
+
+  // private readonly allprservice:allprService
 ){}
 
-  async biddingProcdure(authHeader: string) {
+  async biddingProcdure(authHeader: string,prId:string) {
   
     const webToken = process.env.WEB_TOKEN;
 
     if (!webToken) {
       throw new Error('WEB_TOKEN is not defined');
     }
-//
-const {id:procurementRequisitionId} = await this.identifactionservice.getFakesData();
+
+    const procurementRequisitionId=prId;
+      console.log(procurementRequisitionId)
+
+
 const bds_generals = {
     clarificationDeadline: "2024-08-14T21:00:00.000Z",
     jointVentureAllowed: false,

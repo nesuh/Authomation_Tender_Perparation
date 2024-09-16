@@ -1,16 +1,14 @@
 import { Injectable ,InternalServerErrorException} from '@nestjs/common';
 import axios from 'axios';
-
 import { allprService } from './PrPreparation/allpr/allpr.service';
-import { OneServices } from './One_Tender/one.service';
+
 
 
 @Injectable()
 export class AppService {
     constructor(
+        private readonly allprservice:allprService
 
-        private readonly allservice:allprService,
-        private readonly oneservice:OneServices
        ) {}
 
     async appAll( authHeader:string){
@@ -20,11 +18,18 @@ export class AppService {
       throw new InternalServerErrorException('WEB_TOKEN is not defined');
     }
     try{
-        await this.allservice.initiateWorkflow(authHeader)
-        await this.oneservice.oneTender(authHeader)
+     await this.allprservice.initiateWorkflow(authHeader)
     }catch (error) {
-      console.error('Error executing One Tender:', error);
-      throw new InternalServerErrorException('Failed to execute One Tender');
+      if (axios.isAxiosError(error)) {
+        console.error('Error details:', {
+            status: error.response?.status,
+            headers: error.response?.headers,
+            data: error.response?.data, // Log the detailed error message
+        });
+    } else {
+        console.error('Unexpected error:', error);
+    }
+    throw new InternalServerErrorException('Failed to execute One Tender');
     }
    
 }

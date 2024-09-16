@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { faker } from '@faker-js/faker';
-import { FakeService } from 'src/PrPreparation/pidentification/fake.service';
+// import { allprService } from 'src/PrPreparation/allpr/allpr.service';
 @Injectable()
 export class ContractService {
 private readonly apiurlGeneralProvision="https://dev-bo.megp.peragosystems.com/tendering/api/scc-general-provisions"
@@ -12,16 +12,23 @@ private readonly apiurlGuarantees="https://dev-bo.megp.peragosystems.com/tenderi
 private readonly apiurlLiabilities="https://dev-bo.megp.peragosystems.com/tendering/api/scc-liabilities"
 //i include the invitation
 private readonly apiurlInvitation_P_fee="https://dev-bo.megp.peragosystems.com/tendering/api/tender-participation-fees"
-constructor(private readonly identifactionservice:FakeService){}
-  async ContractCondition(authHeader: string) {
+constructor(
+  // private readonly allprservice:allprService
+){}
+  async ContractCondition(authHeader: string,prId:string) {
 
     const webToken = process.env.WEB_TOKEN; 
     if (!webToken) {
       throw new Error('WEB_TOKEN is not defined');
   
   }
+  const procurementRequisitionId=prId;
+  console.log(procurementRequisitionId)
+
+
+
   //scc_general_provision 
-  const {id:procurementRequisitionId} = await this.identifactionservice.getFakesData();
+
   const scc_general_provision={
     commencementDay: 1,
     contractDuration: 2,

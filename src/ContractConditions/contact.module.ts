@@ -1,15 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ContractController } from './contact.controller';
-import { ContractService } from './contact.service';
-import { FakeModule } from 'src/PrPreparation/pidentification/fake.module';
-
-
-
-
+import { ContractService } from './contact.service'
+import { allprModule } from 'src/PrPreparation/allpr/allpr.module';
 @Module({
-    imports:[
-        FakeModule],
-    controllers :[ContractController],
+    imports:[ 
+    ],
     providers :[ContractService],
     exports: [ContractService], //
 

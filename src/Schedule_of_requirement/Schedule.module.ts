@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ScheduleService } from './Schedule.service';
-import { ScheduleController } from './Schedule.controller';
 import { BiddingModule } from 'src/Bidding_Procdure/biddingProcdure.module';
 import { ConfigarationModule } from 'src/configaration/configaration.module';
 import { ContractModule } from 'src/ContractConditions/contact.module';
-import { FakeModule } from 'src/PrPreparation/pidentification/fake.module';
-
+// import { allprModule } from 'src/PrPreparation/allpr/allpr.module';
 
 
 @Module({
-    imports:[BiddingModule,ConfigarationModule,ContractModule,FakeModule],
-    controllers :[ScheduleController],
+    imports:[BiddingModule,ConfigarationModule,ContractModule],
+
     providers :[ScheduleService],
     exports: [ScheduleService], //
 

@@ -1,15 +1,19 @@
 // src/procurement/procurement.module.ts
 import { Module } from '@nestjs/common';
-import { allprControllor } from './allpr.controller';
 import { allprService } from './allpr.service';
 import { ItemModule } from '../pitem/items.module';
 import { MethodModule } from '../pmethod/pmethod.module';
-import { FakeModule } from '../pidentification/fake.module';
+import { IdentificationModule } from '../pidentification/identification.module';
 import { TimeLineModule } from '../ptimeline/timeline.module';
+import { BiddingModule } from 'src/Bidding_Procdure/biddingProcdure.module';
+import { ContractModule } from 'src/ContractConditions/contact.module';
+import { ScheduleModule } from 'src/Schedule_of_requirement/Schedule.module';
+import { ConfigarationModule } from 'src/configaration/configaration.module';
 @Module({
-  imports: [FakeModule,MethodModule,ItemModule,TimeLineModule], // Import TimeLineModule
+  imports: [
+    IdentificationModule,MethodModule,ItemModule,TimeLineModule,
+    ConfigarationModule,BiddingModule,ContractModule,ScheduleModule,],
   providers: [allprService],
-  controllers: [allprControllor],
   exports: [allprService],
 })
 export class allprModule {}

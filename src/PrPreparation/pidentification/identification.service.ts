@@ -6,12 +6,12 @@ import { faker } from '@faker-js/faker';
 import axios from 'axios';
 
 @Injectable()
-export class FakeService {
+export class IdentificationService {
   
   
    private readonly urlapiProcurement = "https://dev-bo.megp.peragosystems.com/planning/api/procurement-requisitions";
 
-  async getFakesData(): Promise<{ id: string }> {
+  async getIdentificationsData(): Promise<{ id: string }> {
     const webToken = process.env.WEB_TOKEN;
 
     
@@ -19,7 +19,7 @@ export class FakeService {
       throw new Error('WEB_TOKEN is not defined');
     }
 
-    const procurementMethods = ['tendering', 'purchasing', 'auctioning'];
+    // const procurementMethods = ['tendering', 'purchasing', 'auctioning'];
     const procurement = {
       budgetId: "7574b4bb-91a7-4489-823d-e73dff3e5ed5",
       budgetYearId: "28974b42-9b86-45d6-b301-69496456dac6",
@@ -27,7 +27,8 @@ export class FakeService {
       description: 'This is a description for tendering!!!',
       isMultiYear: faker.datatype.boolean(),
       name: `INTERNES ${faker.commerce.productName()}`,
-      procurementApplication: faker.helpers.arrayElement(procurementMethods),
+      // procurementApplication: faker.helpers.arrayElement(procurementMethods),
+      procurementApplication:'tendering',
       remark: faker.lorem.sentence(),
       totalEstimatedAmount: parseFloat(faker.finance.amount()),  // Ensure this is a number
       type: 'Others',

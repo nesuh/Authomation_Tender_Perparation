@@ -4,9 +4,9 @@ import { Module } from '@nestjs/common';
 
 import {MethodController} from './pmethod.controller'
 import {MethodService} from './pmethod.service'
-import {FakeModule} from '../pidentification/fake.module'
+import {IdentificationModule} from '../pidentification/identification.module'
 @Module({
-  imports: [FakeModule],
+  imports: [IdentificationModule],
   providers: [MethodService],
   controllers: [MethodController],
   exports: [MethodService],
