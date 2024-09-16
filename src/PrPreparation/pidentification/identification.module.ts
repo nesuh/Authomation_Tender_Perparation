@@ -1,14 +1,10 @@
-// src/procurement/procurement.module.ts
+// src/procurement/identification.module.ts
 import { Module } from '@nestjs/common';
 import { IdentificationService } from './identification.service';
-import { IdentificationController } from './identification.controller';
 
 @Module({
-  
-    
-  controllers: [IdentificationController],
-  providers: [IdentificationService],
-  exports: [IdentificationService],
-  
+  // Add IdentificationController
+  providers: [IdentificationService],      // Provide IdentificationService
+  exports: [IdentificationService],        // Export IdentificationService so other modules can use it
 })
 export class IdentificationModule {}

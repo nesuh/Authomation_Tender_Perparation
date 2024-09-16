@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
-
-// import { InjectRepository } from '@nestjs/typeorm';
-// import { Repository } from 'typeorm';
 import axios from 'axios';
 
 @Injectable()

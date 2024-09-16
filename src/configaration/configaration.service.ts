@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { faker } from '@faker-js/faker';
+import { faker, id_ID } from '@faker-js/faker';
 
 @Injectable()
 export class ConfigurationService {
@@ -34,23 +34,25 @@ export class ConfigurationService {
     };
 
    
-    const procurementMechanism = {
-      invitationType: 'open',
-      marketApproach: 'national',
-      stage: 1,
-      stageType: 'single',
-      tenderId:tenderId,
-      PRProcurementMechanisms:{}
-     
-    };
+    // const procurementMechanism = {
+    //   invitationType: 'open',
+    //   marketApproach: 'national',
+    //   stage: 1,
+    //   stageType: 'single',
+    //   tenderId:tenderId,
+   
+    // };
+  
 
-    const urlStandardProcurementDocument = 'https://dev-bo.megp.peragosystems.com/tendering/api/tender-personals';
+
+    // const urlStandardProcurementDocument = 'https://dev-bo.megp.peragosystems.com/tendering/api/tender-personals';
     const urlPersonnelList = 'https://dev-bo.megp.peragosystems.com/tendering/api/tender-spd';
-    const urlProcurementMechanism = 'https://dev-bo.megp.peragosystems.com/tendering/api/procurement-mechanisms';
+  
 
     try {
 
 
+  
 
 
       // console.log('Sending Standard Procurement Document:', standardProcurementDocument);
@@ -71,19 +73,20 @@ export class ConfigurationService {
       });
       console.log('Personnel List registered successfully!', personnelResponse.data);
 
-      console.log('Sending Procurement Mechanism:', procurementMechanism);
-      const mechanismResponse = await axios.put(urlProcurementMechanism, procurementMechanism, {
-        headers: {
-          Authorization: `Bearer ${webToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log('Procurement Mechanism registered successfully!', mechanismResponse.data);
+      // console.log('Sending Procurement Mechanism:', procurementMechanism);
+      // const urlProcurementMechanism = `https://dev-bo.megp.peragosystems.com/tendering/api/procurement-mechanisms/${prId}`;
+      // const mechanismResponse = await axios.put(urlProcurementMechanism, procurementMechanism, {
+      //   headers: {
+      //     Authorization: `Bearer ${webToken}`,
+      //     'Content-Type': 'application/json',
+      //   },
+      // });
+      // console.log('Procurement Mechanism registered successfully!', mechanismResponse.data);
 console.log("Go TO Next Bro!!!")
       return {
         // spdResponse: spdResponse.data,
         personnelResponse: personnelResponse.data,
-        mechanismResponse: mechanismResponse.data,
+        // mechanismResponse: mechanismResponse.data,
       };
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {

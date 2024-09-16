@@ -10,12 +10,14 @@ private readonly apiurlPaymentTerms=" https://dev-bo.megp.peragosystems.com/tend
 private readonly apiurlPaymentSchedules="https://dev-bo.megp.peragosystems.com/tendering/api/scc-payment-schedules"
 private readonly apiurlGuarantees="https://dev-bo.megp.peragosystems.com/tendering/api/scc-guarantees"
 private readonly apiurlLiabilities="https://dev-bo.megp.peragosystems.com/tendering/api/scc-liabilities"
+private readonly apiurltenderClassification="https://dev-bo.megp.peragosystems.com/tendering/api/tender-classifications"
+private readonly apiurlSubmit="https://dev-bo.megp.peragosystems.com/tendering/api/tenders/change-status"
 //i include the invitation
 private readonly apiurlInvitation_P_fee="https://dev-bo.megp.peragosystems.com/tendering/api/tender-participation-fees"
 constructor(
   // private readonly allprservice:allprService
 ){}
-  async ContractCondition(authHeader: string,prId:string) {
+  async ContractCondition(authHeader: string,prId:string,tenderId:string) {
 
     const webToken = process.env.WEB_TOKEN; 
     if (!webToken) {
@@ -23,7 +25,7 @@ constructor(
   
   }
   const procurementRequisitionId=prId;
-  console.log(procurementRequisitionId)
+  console.log("pr Id is ",procurementRequisitionId)
 
 
 
@@ -34,15 +36,14 @@ constructor(
     contractDuration: 2,
     contractType: "turn key",
     deliverySite: "11 ",
-    // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060" 
-    tenderId: procurementRequisitionId
+  
+    tenderId: tenderId
   }
 
 const scc_contract_deliverables ={
     deliverable:["11c"], 
     deliverySchedule: 2,
-    // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
-    tenderId: procurementRequisitionId
+    tenderId: tenderId
 }
 const PayemtTerms={
 advancePaymentAllowed: faker.datatype.boolean(),
@@ -51,25 +52,22 @@ contractCurrency: ["MWK"],
 latePaymentPenalty: 4,
 paymentMode:["paymentMethodOne"],
 paymentReleasePeriod: 15,
-// tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
-tenderId: procurementRequisitionId
+tenderId: tenderId
 
 }
 const PayemntSchedule={
     order: 3,
     paymentPercentage:  5,
     paymentSchedule: "55",
-    requiredDocuments:  ["dd"],
-    // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060" 
-    tenderId: procurementRequisitionId
+    requiredDocuments:  ["dd"], 
+    tenderId: tenderId
 }
 
 const liabilities={
 liquidityDamage: 2,
 liquidityDamageLimit: 2,
 postWarrantyServicePeriod: 2,
-// tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060",
-tenderId: procurementRequisitionId,
+tenderId: tenderId,
 warrantyPeriod: 2
 }
 const Guarantees={
@@ -78,8 +76,7 @@ guaranteeForm: ["Bank Guarantee"],
 guaranteePercentage: 42,
 guaranteeRequired: faker.datatype.boolean(),
 guaranteeType: "Advance Payment Guarantee",
-// tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060",
-tenderId: procurementRequisitionId,
+tenderId: tenderId,
 validityPeriod: 45
 }
 //threse is invitation part 
@@ -87,9 +84,29 @@ const ParticipationFee={
   amount: faker.number.int({min:50000}),
   currency: "MWK",
   method: "Bank",
-  // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
-  tenderId: procurementRequisitionId
+  tenderId: tenderId
 }
+
+
+const tenderClassification = {
+  tenderId: tenderId,
+  classification: [
+    {
+      tenantId: 0,
+      createdAt: "2023-12-01T13:47:05.907Z",
+      updatedAt: "2024-06-18T13:44:34.504Z",
+    
+    }
+  ]
+
+};
+
+const submitToReview={
+id: tenderId,
+status: "SUBMITTED"
+}
+
+
 
   try{
 const GeneralProvisionResponse = await axios.post(this.apiurlGeneralProvision,scc_general_provision,{
@@ -158,7 +175,31 @@ console .log("PayemntSchedule data successfully Register ",PayemntScheduleRespon
   })
   console.log("send the ParticipationFee data",ParticipationFee)
   console .log("ParticipationFee data successfully Register ",ParticipationFeeResponse.data)
+  
 
+
+
+
+  const tenderClassificationResponse = await axios.post(this.apiurltenderClassification,tenderClassification,{
+    headers:{
+        Authorization:`Bearer ${webToken}`,
+        'Content-Type':'application/json',
+              }
+})
+console.log("send the tenderClassification data",tenderClassification)
+console .log("tenderClassification data successfully Register ",tenderClassificationResponse.data)
+  
+
+//submit to Review 
+
+const submitToReviewResponse = await axios.post(this.apiurlSubmit,submitToReview,{
+  headers:{
+      Authorization:`Bearer ${webToken}`,
+      'Content-Type':'application/json',
+            }
+})
+console.log("send the submitToReview data",submitToReview)
+console .log("submitToReview data successfully Register ",submitToReviewResponse.data)
 
 }catch(error:unknown){
     if (axios.isAxiosError(error)) {

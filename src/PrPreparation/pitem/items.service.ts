@@ -11,6 +11,7 @@ export class ItemService {
         private readonly methodservice: MethodService
     ) {}
 
+    
     async createItemData() {
         const webToken = process.env.WEB_TOKEN;
         const {procurementRequisitionId} = await this.methodservice.createProcurementMethod();
@@ -52,7 +53,7 @@ export class ItemService {
                     'User-Agent': 'axios/1.7.2',
                 },
             });
-            console.log("Items Data is sent successfully!");
+            console.log("Items Data is sent successfully!",ItemResponse.data);
             return ItemResponse.data;
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {

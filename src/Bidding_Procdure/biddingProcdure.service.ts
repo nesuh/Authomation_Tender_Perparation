@@ -15,7 +15,7 @@ constructor(
   // private readonly allprservice:allprService
 ){}
 
-  async biddingProcdure(authHeader: string,prId:string) {
+  async biddingProcdure(authHeader: string,prId:string,tenderId:string) {
   
     const webToken = process.env.WEB_TOKEN;
 
@@ -24,7 +24,7 @@ constructor(
     }
 
     const procurementRequisitionId=prId;
-      console.log(procurementRequisitionId)
+      console.log('tender id is ',procurementRequisitionId)
 
 
 const bds_generals = {
@@ -37,7 +37,7 @@ const bds_generals = {
     siteVisitAllowed: false,
     subContractAllowed: false,
     // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
-    tenderId:procurementRequisitionId
+    tenderId:tenderId
 }
 // these bds preparation 
 const bds_Preparation={
@@ -55,7 +55,7 @@ importedInput: "Local currency Only",
 localInput: "Local currency Only",
 incotermType: "DDP",
 incotermsEdition: " 2021",
-tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+tenderId: tenderId
 }
 
 //these 3rd step is submision data 
@@ -70,39 +70,48 @@ envelopType:getRandomEnvelopType(),
 invitationDate: "2024-08-07T08:30:00.996Z",
 openingDate: "2024-08-24T13:30:00.137Z",
 submissionDeadline: "2024-08-16T12:30:00.210Z",
-tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+tenderId:tenderId
 }
-const awardType=['item based','lot based']
-const evaluationMethod=['point system','compliance']
-function getevaluationMethod(){
-  const index=faker.number.int({min:0,max:evaluationMethod.length-1})
-  return evaluationMethod[index]
+
+
+const awardType = ['item based', 'lot based'];
+const evaluationMethod = ['point system', 'compliance'];
+
+function getevaluationMethod() {
+  const index = faker.number.int({ min: 0, max: evaluationMethod.length - 1 });
+  return evaluationMethod[index];
 }
-function getAwardType(){
-  const index=faker.number.int({min:0,max:awardType.length-1})
-  return awardType[index]
+
+function getAwardType() {
+  const index = faker.number.int({ min: 0, max: awardType.length - 1 });
+  return awardType[index];
 }
-const selectedEvaluationMethod=getevaluationMethod()
-const bds_evaluation={
-awardType: getAwardType(),
-bidEvaluationCurrency: ["SAR"],
-...(selectedEvaluationMethod === 'point system' ? {
-  financialWeight: 70,
-  passingMark: 50,
-  technicalWeight: 30
-} : {
-  financialWeight: 0,
-  passingMark: 0,
-  technicalWeight: 0
-}),
-selectionMethod: "LPS",
-tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
-}
+
+const selectedEvaluationMethod = getevaluationMethod();
+
+const bds_evaluation = {
+  awardType: getAwardType(),
+  bidEvaluationCurrency: ["SAR"],
+  evaluationMethod: selectedEvaluationMethod,  // Add this line
+  ...(selectedEvaluationMethod === 'point system' ? {
+    financialWeight: 70,
+    passingMark: 50,
+    technicalWeight: 30
+  } : {
+    financialWeight: 0,
+    passingMark: 0,
+    technicalWeight: 0
+  }),
+  selectionMethod: "LPS",
+  tenderId: tenderId
+};
+
+
 const bds_award={
 negotiationAllowed: faker.datatype.boolean(),
 percentageQuantityDecreased: 8,
 percentageQuantityIncreased: 5,
-tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
+tenderId:tenderId
 }
 try{
     const  bds_GeneralResponse = await axios.post(this.apiurlGeneral, bds_generals, {
@@ -133,15 +142,15 @@ const bds_submissionsResponse = await axios.post(this.apiurlSubmission,bds_submi
       console.log("sending bds submission",bds_submissions);
       console.log("bds submission submit successfully!",bds_submissionsResponse.data)
 
-      const bds_EvaluationResponse = await axios.post(this.apiurlEvaluation,bds_evaluation,{
-        headers:{
-  Authorization:`Bearer ${webToken}`,
-  'Content-Type':'application/json',
+      const bds_EvaluationResponse = await axios.post(this.apiurlEvaluation, bds_evaluation, {
+        headers: {
+          Authorization: `Bearer ${webToken}`,
+          'Content-Type': 'application/json',
         }
-        
       });
-      console.log("sending bds Evaluation",bds_evaluation);
-      console.log("bds Evaluation Registeard successfully!",bds_EvaluationResponse.data)
+      
+      console.log("Sending bds Evaluation", bds_evaluation);
+      console.log("bds Evaluation Registered successfully!", bds_EvaluationResponse.data);
 
       const bds_AwardResponse = await axios.post(this.apiurlAward,bds_award,{
         headers:{

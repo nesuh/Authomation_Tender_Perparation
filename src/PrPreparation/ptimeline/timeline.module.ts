@@ -4,10 +4,8 @@ import { TimeLineService } from './timeline.service';
 import { TimelineController } from './timeline.controllor';
 import { ItemService } from '../pitem/items.service';
 import { ItemModule } from '../pitem/items.module';
-// import { ItemModule } from '../pitem/items.module';
-
 @Module({
-  imports: [ItemModule], // This is incorrect
+  imports: [ItemModule], 
   providers: [TimeLineService],
   controllers: [TimelineController],
   exports: [TimeLineService],
