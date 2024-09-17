@@ -22,7 +22,7 @@ constructor(
     if (!webToken) {
       throw new Error('WEB_TOKEN is not defined');
     }
-
+    const invitationDate=new Date();
     const procurementRequisitionId=prId;
       console.log('tender id is ',procurementRequisitionId)
 
@@ -36,7 +36,6 @@ const bds_generals = {
     preBidConferenceRequired: false,
     siteVisitAllowed: false,
     subContractAllowed: false,
-    // tenderId: "cdbb3962-7506-44ee-b4af-2ca798176060"
     tenderId:tenderId
 }
 // these bds preparation 
@@ -60,48 +59,54 @@ tenderId: tenderId
 
 //these 3rd step is submision data 
 //using api https://dev-bo.megp.peragosystems.com/tendering/api/bds-submissions
-const enveloptype=['single envelop','two envelop']
-function getRandomEnvelopType(){
-  const index=faker.number.int({min:0,max:enveloptype.length-1})
-  return enveloptype[index]
+
+//If We Automate  Envelope type use these 
+// const enveloptype=['single envelop','two envelop']
+// function getRandomEnvelopType(){
+//   const index=faker.number.int({min:0,max:enveloptype.length-1})
+//   return enveloptype[index]
+// }
+//
+
+
+function addMinutes(date, minutes) {
+  return new Date(date.getTime() + minutes * 60000);
 }
-const bds_submissions={
-envelopType:getRandomEnvelopType(),
-invitationDate: "2024-08-07T08:30:00.996Z",
-openingDate: "2024-08-24T13:30:00.137Z",
-submissionDeadline: "2024-08-16T12:30:00.210Z",
-tenderId:tenderId
-}
+
+// Calculate submissionDeadline (10 days after invitationDate)
+const submissionDeadline = addMinutes(invitationDate, 10);
+
+// Calculate openingDate (10 days after submissionDeadline)
+const openingDate = addMinutes(submissionDeadline, 10)
+
+
+
+const bds_submissions = {
+  envelopType: 'single envelop',
+  invitationDate: invitationDate.toISOString(),  // current time in ISO format
+  submissionDeadline: submissionDeadline.toISOString(),  // invitationDate + 10 days
+  openingDate: openingDate.toISOString(),  // submissionDeadline + 10 days
+  tenderId: tenderId
+};
 
 
 const awardType = ['item based', 'lot based'];
-const evaluationMethod = ['point system', 'compliance'];
 
-function getevaluationMethod() {
-  const index = faker.number.int({ min: 0, max: evaluationMethod.length - 1 });
-  return evaluationMethod[index];
-}
 
 function getAwardType() {
   const index = faker.number.int({ min: 0, max: awardType.length - 1 });
   return awardType[index];
 }
 
-const selectedEvaluationMethod = getevaluationMethod();
+// const selectedEvaluationMethod = getevaluationMethod();
 
 const bds_evaluation = {
   awardType: getAwardType(),
   bidEvaluationCurrency: ["SAR"],
-  evaluationMethod: selectedEvaluationMethod,  // Add this line
-  ...(selectedEvaluationMethod === 'point system' ? {
-    financialWeight: 70,
-    passingMark: 50,
-    technicalWeight: 30
-  } : {
-    financialWeight: 0,
-    passingMark: 0,
-    technicalWeight: 0
-  }),
+  evaluationMethod: 'compliance',  // Fixed evaluation method
+  financialWeight: 0,              // Fixed value for compliance
+  passingMark: 0,                  // Fixed value for compliance
+  technicalWeight: 0,              // Fixed value for compliance
   selectionMethod: "LPS",
   tenderId: tenderId
 };
