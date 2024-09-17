@@ -145,9 +145,7 @@ export class allprService {
       // Step 8: Register Procurement Details
       await  this.configurationService.registerProcurementDetails(authHeader, prId, tenderId);
 
-      // Step 9: Get Item ID and proceed
-      
-
+      // Step 9: Get Item ID and procee  
       const itemUrl = `https://dev-bo.megp.peragosystems.com/tendering/api/items/list/${lotId}`;
       const getIdFromItem = await axios.get(itemUrl, {
         headers: {
@@ -156,17 +154,14 @@ export class allprService {
         },
       });
       console.log('API Response:', getIdFromItem.data);
-
-      // Extract itemId from the first item if available
-      const items = getIdFromItem.data.items;
-     console.log("all lots data :",items);
-        const itemId = items[0].id;
-        console.log('Generated Item ID:', itemId);
-     
-      
+            // Extract itemId from the first item if available
+            const items = getIdFromItem.data.items;
+            console.log("all lots data :",items);
+               const itemId = items[0].id;
+               console.log('Generated Item ID:', itemId);
 
       await this.scheduleService.sendAllRequirements(prId, itemId);
-      await this.biddingService.biddingProcdure(authHeader, prId,tenderId);
+      await this.biddingService.biddingProcdure(authHeader, prId,tenderId,lotId);
       await this.contractService.ContractCondition(authHeader, prId,tenderId);
 
     } catch (error: any) {

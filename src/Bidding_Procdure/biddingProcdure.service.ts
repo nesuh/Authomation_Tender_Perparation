@@ -10,18 +10,21 @@ private readonly apiurlGeneral="https://dev-bo.megp.peragosystems.com/tendering/
 private readonly apiurlSubmission="https://dev-bo.megp.peragosystems.com/tendering/api/bds-submissions"
 private readonly apiurlEvaluation="https://dev-bo.megp.peragosystems.com/tendering/api/bds-evaluations"
 private readonly apiurlAward="https://dev-bo.megp.peragosystems.com/tendering/api/bds-awards"
+private readonly apiurlTechnical_scoring='https://dev-bo.megp.peragosystems.com/tendering/api/eqc-technical-scorings'
 constructor(
 
   // private readonly allprservice:allprService
 ){}
 
-  async biddingProcdure(authHeader: string,prId:string,tenderId:string) {
+  async biddingProcdure(authHeader: string,prId:string,tenderId:string,lotsId:string) {
   
     const webToken = process.env.WEB_TOKEN;
 
     if (!webToken) {
       throw new Error('WEB_TOKEN is not defined');
     }
+    console.log("we accept lots Id ",lotsId);
+
     const invitationDate=new Date();
     const procurementRequisitionId=prId;
       console.log('tender id is ',procurementRequisitionId)
@@ -61,12 +64,12 @@ tenderId: tenderId
 //using api https://dev-bo.megp.peragosystems.com/tendering/api/bds-submissions
 
 //If We Automate  Envelope type use these 
-// const enveloptype=['single envelop','two envelop']
-// function getRandomEnvelopType(){
-//   const index=faker.number.int({min:0,max:enveloptype.length-1})
-//   return enveloptype[index]
-// }
-//
+const enveloptype=['single envelop','two envelop']
+function getRandomEnvelopType(){
+  const index=faker.number.int({min:0,max:enveloptype.length-1})
+  return enveloptype[index]
+}
+
 
 
 function addMinutes(date, minutes) {
@@ -80,36 +83,69 @@ const submissionDeadline = addMinutes(invitationDate, 10);
 const openingDate = addMinutes(submissionDeadline, 10)
 
 
-
+const envelopType=getRandomEnvelopType();
 const bds_submissions = {
-  envelopType: 'single envelop',
+  envelopType:envelopType,
   invitationDate: invitationDate.toISOString(),  // current time in ISO format
   submissionDeadline: submissionDeadline.toISOString(),  // invitationDate + 10 days
   openingDate: openingDate.toISOString(),  // submissionDeadline + 10 days
   tenderId: tenderId
 };
 
-
 const awardType = ['item based', 'lot based'];
-
-
 function getAwardType() {
   const index = faker.number.int({ min: 0, max: awardType.length - 1 });
   return awardType[index];
 }
-
-// const selectedEvaluationMethod = getevaluationMethod();
+const evaluationMethod = ['point system', 'compliance'];
+function getevaluationMethod() {
+  const index = faker.number.int({ min: 0, max: evaluationMethod.length - 1 });
+  return evaluationMethod[index];
+}
+const selectedEvaluationMethod = getevaluationMethod();
 
 const bds_evaluation = {
   awardType: getAwardType(),
-  bidEvaluationCurrency: ["SAR"],
-  evaluationMethod: 'compliance',  // Fixed evaluation method
-  financialWeight: 0,              // Fixed value for compliance
-  passingMark: 0,                  // Fixed value for compliance
-  technicalWeight: 0,              // Fixed value for compliance
+  bidEvaluationCurrency: ["MWK"],
+  evaluationMethod: selectedEvaluationMethod,
   selectionMethod: "LPS",
-  tenderId: tenderId
+  tenderId: tenderId,
+  // Set values based on evaluationMethod
+   ...(selectedEvaluationMethod === 'point system'
+    ? {
+        financialWeight: 40,
+        technicalWeight: 60,
+        passingMark: 51
+      }
+    : {
+        financialWeight: 0,
+        technicalWeight: 0,
+        passingMark: 0
+      })
 };
+
+const Technical_Scoring_Payload={
+    bidFormId: "35368607-f48d-406d-a4f0-b630cf715421",
+    hasProfessional: false,
+    isProfessional: false,
+    isRequired: false,
+    lotId: lotsId,
+    parentId: null,
+    point: 10,
+    requirement: "technical criteria For test",  // Corrected the typo
+    requirementCondition: "Has to meet",
+    validation: {
+      min: 0,
+      max: 100
+    }
+}
+
+
+
+
+// const selectedEvaluationMethod = getevaluationMethod();
+
+
 
 
 const bds_award={
@@ -147,6 +183,9 @@ const bds_submissionsResponse = await axios.post(this.apiurlSubmission,bds_submi
       console.log("sending bds submission",bds_submissions);
       console.log("bds submission submit successfully!",bds_submissionsResponse.data)
 
+
+     
+
       const bds_EvaluationResponse = await axios.post(this.apiurlEvaluation, bds_evaluation, {
         headers: {
           Authorization: `Bearer ${webToken}`,
@@ -166,6 +205,33 @@ const bds_submissionsResponse = await axios.post(this.apiurlSubmission,bds_submi
       });
       console.log("sending bds submission",bds_award);
       console.log("bds submission submit successfully!",bds_AwardResponse.data)
+
+    
+
+
+      if(envelopType==='two envelop' && selectedEvaluationMethod==='point system'){
+        const eqc_qualifications  =`https://dev-bo.megp.peragosystems.com/tendering/api/eqc-qualifications/list/${lotsId}`
+
+
+        const eqc_qualificationsResponse = await axios.get(eqc_qualifications, {
+          headers: {
+            Authorization: `Bearer ${webToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('all eqc-qualification Lists', eqc_qualificationsResponse.data);
+
+        const Technical_Scoring_Response=await axios.post(this.apiurlTechnical_scoring,Technical_Scoring_Payload,{
+          headers: {
+            Authorization: `Bearer ${webToken}`,
+            'Content-Type': 'application/json',
+          } 
+        }) 
+        console.log("Sending Technical_Scoring_Payload", Technical_Scoring_Payload);
+        console.log("Technical_Scoring Registered successfully!", Technical_Scoring_Response.data);
+      }else{
+       console.log("Envelope type is not 'two envelop', we skipping Technical Scoring registration.");
+      }
 }catch(error:unknown){
     if (axios.isAxiosError(error)) {
         console.error('Axios error status:', error.response?.status);
