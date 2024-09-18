@@ -34,8 +34,8 @@ export class TimeLineService {
 
   async createTimeLine() {
     const webToken = process.env.WEB_TOKEN;
-    const { procurementRequisitionId } = await this.itemservice.createItemData();
-
+    const itmesresponse = await this.itemservice.createItemData();
+const procurementRequisitionId=itmesresponse[0]?.procurementRequisitionId;
     if (!procurementRequisitionId) {
       console.error('Error: procurementRequisitionId is null or undefined.');
       throw new Error('procurementRequisitionId is null or undefined.');
