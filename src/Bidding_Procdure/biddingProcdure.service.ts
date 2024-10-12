@@ -21,7 +21,6 @@ constructor(
     if (!webToken) {
       throw new Error('WEB_TOKEN is not defined');
     }
-//
 const {id:procurementRequisitionId} = await this.identifactionservice.getFakesData();
 const bds_generals = {
     clarificationDeadline: "2024-08-14T21:00:00.000Z",
